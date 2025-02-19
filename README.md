@@ -16,15 +16,16 @@ Spruce budworm (**Choristoneura occidentalis**) is a forest pest that weakens tr
 ---
 
 ## **Background**
-Western spruce budworms are defoliators that consume conifer needles, particularly in **spruce and fir forests**. Over several years of infestation (3–10 years), trees experience stress due to reduced foliage, weakening their defenses and making them more flammable. Understanding how these outbreaks interact with climate variability and fire regimes is crucial for forest management and wildfire mitigation.
+Western spruce budworms are defoliators that consume conifer needles, particularly in **spruce and fir forests**. Over several years of infestation (3–10 years), trees experience stress due to reduced foliage, potentially making them more flammable. However, herbivory may also reduce the amount of flammable material. Understanding how these outbreaks interact with climate variability and fire regimes is crucial for forest management and wildfire mitigation.
 
 ---
 
-## **Questions & Objectives**
-🔍 **Key Research Questions:**
+## **Questions & Objectives **
+**Key Research Questions:**
 - How do spruce budworm outbreaks influence fire vulnerability in Pacific Northwest forests?
 - What spatial and temporal patterns exist in budworm outbreaks, and how do they correlate with climate variability? 
-- Can fire behavior models predict increased fire risk in budworm-affected forests? 
+- Can fire behavior models predict changes in fire risk in budworm-affected forests?
+- To what extent will patterns with the association between spruce-budworm and fire risk change under climate change?
 
 Our objective is to analyze historical outbreak patterns, integrate climate and fire data, and assess fire vulnerability using geospatial approaches.
 
