@@ -62,8 +62,8 @@ We will conduct all analyses in **Python 🐍**, using the following libraries:
 
 ---
 
-## **Expected Outcomes**
-🎯 **Goals we hope to achieve:**
+## **Expected Outcomes 🎯**
+ **Goals we hope to achieve:**
 - A comprehensive geospatial analysis of **budworm outbreaks** and their role in fire susceptibility.
 - Identification of key climatic and ecological factors that drive **fire risk** in infested forests.
 - Predictive models that could help **inform forest management and wildfire prevention strategies**.
@@ -71,15 +71,15 @@ We will conduct all analyses in **Python 🐍**, using the following libraries:
 
 ---
 
-## **References**
-📚 **Sources & Additional Reading:**
+## **References 📚**
+ **Sources & Additional Reading:**
 - USDA Forest Service: [https://www.fs.usda.gov/foresthealth/](https://www.fs.usda.gov/foresthealth/)
 - MODIS Fire and Vegetation Data: [https://modis.gsfc.nasa.gov/](https://modis.gsfc.nasa.gov/)
 - NOAA Climate Data: [https://www.ncdc.noaa.gov/](https://www.ncdc.noaa.gov/)
 - National Interagency Fire Center: [https://www.nifc.gov/](https://www.nifc.gov/)
 - ECMWF Climate Reanalysis: [https://www.ecmwf.int/en/forecasts/datasets](https://www.ecmwf.int/en/forecasts/datasets)
 
-📖 **Relevant Academic Articles:**
+ **Relevant Academic Articles:**
 - Fettig, C. J., et al. (2007). "Effects of climate change on insects and pathogens in coniferous forests of the western United States and Canada." Environmental Reviews, 15(1), 1-17. [DOI](https://doi.org/10.1139/a06-016)
 - Howe, M., Hart, S. J., & Trowbridge, A. M. (2024). "Budworms, beetles and wildfire: Disturbance interactions influence the likelihood of insect-caused disturbances at a subcontinental scale." Global Change Biology [DOI](https://doi.org/10.1111/1365-2745.14408)
 - Hummel, S., & Agee, J. K. (2003). "Western spruce budworm defoliation effects on fuel dynamics and potential fire behavior in mixed-conifer forests." Forest Ecology and Management, 186(1-3), 13-28. [DOI](https://doi.org/10.1016/S0378-1127(03)00228-2)
