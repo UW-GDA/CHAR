@@ -33,7 +33,6 @@ Our objective is to analyze historical outbreak patterns, integrate climate and 
 ## **Datasets 📊**
 We will use the following datasets:
 - **🌲 Forest Health Monitoring Program (USDA Forest Service)** – [Link](https://www.fs.usda.gov/foresthealth/) (Budworm outbreak data)
-- **🏞️ State Department of Natural Resources** – Regional forest health reports
 - **🛰️ NASA MODIS (Terra/Aqua)** – [Link](https://modis.gsfc.nasa.gov/) (Satellite imagery for vegetation and fire detection)
 - **🌡️ NOAA Climate Data** – [Link](https://www.ncdc.noaa.gov/) (Temperature, precipitation, and drought indices)
 - **🔥 National Interagency Fire Center (NIFC)** – [Link](https://www.nifc.gov/) (Fire occurrence and severity data)
@@ -51,7 +50,7 @@ We will conduct all analyses in **Python 🐍**, using the following libraries:
 
 ---
 
-## **Methodology 📈 **
+## **Methodology 📈**
 1. **Data Collection & Cleaning**: Aggregate outbreak, fire, and climate data, ensuring temporal and spatial alignment.
 2. **Geospatial Analysis**: Use remote sensing to map budworm infestations over time and integrate fire occurrence data.
 3. **Climate Correlation**: Analyze climate trends and their relationship with outbreak severity.
@@ -78,7 +77,10 @@ We will conduct all analyses in **Python 🐍**, using the following libraries:
 - ECMWF Climate Reanalysis: [https://www.ecmwf.int/en/forecasts/datasets](https://www.ecmwf.int/en/forecasts/datasets)
 
 📖 **Relevant Academic Articles:**
-- *Fettig, C. J., et al. (2007). "Effects of climate change on insects and pathogens in coniferous forests of the western United States and Canada." Environmental Reviews, 15(1), 1-17.* [DOI](https://doi.org/10.1139/a06-016)
-- *Hummel, S., & Agee, J. K. (2003). "Western spruce budworm defoliation effects on fuel dynamics and potential fire behavior in mixed-conifer forests." Forest Ecology and Management, 186(1-3), 13-28.* [DOI](https://doi.org/10.1016/S0378-1127(03)00228-2)
-- *Raffa, K. F., et al. (2008). "Cross-scale drivers of natural disturbances prone to anthropogenic amplification: The dynamics of bark beetle eruptions." BioScience, 58(6), 501-517.* [DOI](https://doi.org/10.1641/B580607)
+- Fettig, C. J., et al. (2007). "Effects of climate change on insects and pathogens in coniferous forests of the western United States and Canada." Environmental Reviews, 15(1), 1-17. [DOI](https://doi.org/10.1139/a06-016)
+- Howe, M., Hart, S. J., & Trowbridge, A. M. (2024). "Budworms, beetles and wildfire: Disturbance interactions influence the likelihood of insect-caused disturbances at a subcontinental scale." Global Change Biology [DOI](https://doi.org/10.1111/1365-2745.14408)
+- Hummel, S., & Agee, J. K. (2003). "Western spruce budworm defoliation effects on fuel dynamics and potential fire behavior in mixed-conifer forests." Forest Ecology and Management, 186(1-3), 13-28. [DOI](https://doi.org/10.1016/S0378-1127(03)00228-2)
+- Meigs, G. W., et al. (2016). "Do insect outbreaks reduce the severity of subsequent forest fires?" Environmental Research Letters, 11(4), 045008. [DOI](https://doi.org/10.1088/1748-9326/11/4/045008)
+- Powell, D. C. (1994). Effects of the 1980s Western Spruce Budworm Outbreak on the Malheur National Forest in Northeastern Oregon (R6–FI&D–TP–12–94). United States Department of Agriculture, Forest Service, Pacific Northwest Region, Forest Insects and Diseases Group. [link](https://osu-wams-blogs-uploads.s3.amazonaws.com/blogs.dir/3942/files/2020/10/1994-Powell-Malheur-SpruceBudWorm_stelprdb5358589.pdf)
+- Raffa, K. F., et al. (2008). "Cross-scale drivers of natural disturbances prone to anthropogenic amplification: The dynamics of bark beetle eruptions." BioScience, 58(6), 501-517. [DOI](https://doi.org/10.1641/B580607)
 
