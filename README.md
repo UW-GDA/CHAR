@@ -20,13 +20,15 @@ Western spruce budworms are defoliators that consume conifer needles, particular
 
 ---
 
-## **Questions & Objectives **
+## **Questions & Objectives 🔍**
+
 **Key Research Questions:**
 - How do spruce budworm outbreaks influence fire vulnerability in Pacific Northwest forests?
 - What spatial and temporal patterns exist in budworm outbreaks, and how do they correlate with climate variability? 
 - Can fire behavior models predict changes in fire risk in budworm-affected forests?
 - To what extent will patterns with the association between spruce-budworm and fire risk change under climate change?
 
+**Objective:**
 Our objective is to analyze historical outbreak patterns, integrate climate and fire data, and assess fire vulnerability using geospatial approaches.
 
 ---
