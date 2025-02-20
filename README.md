@@ -3,9 +3,8 @@
 
 ### **Team Members**
 - Rachel Potter  
-- Iris Mire  
-
----
+- Iris Mire
+  
 
 ## **Project Summary**
 Spruce budworm (**Choristoneura occidentalis**) is a forest pest that weakens trees, increasing their susceptibility to wildfires. In this project, we examine the spatial dynamics of **Western spruce budworm outbreaks** and their role in **fire vulnerability** in the Pacific Northwest. Using geospatial analysis, climate data, and fire behavior modeling, we aim to identify key predictors of fire risk in infested forests.
@@ -13,15 +12,12 @@ Spruce budworm (**Choristoneura occidentalis**) is a forest pest that weakens tr
 🌍 **Range Map of the Western Spruce Budworm:**  
 ![Spruce Budworm Range](range_map.png)
 
----
 
 ## **Background**
 Western spruce budworms are defoliators that consume conifer needles, particularly in **spruce and fir forests**. Over several years of infestation (3–10 years), trees experience stress due to reduced foliage, potentially making them more flammable. However, herbivory may also reduce the amount of flammable material. Understanding how these outbreaks interact with climate variability and fire regimes is crucial for forest management and wildfire mitigation.
 
----
 
 ## **Questions & Objectives 🔍**
-
 **Key Research Questions:**
 - How do spruce budworm outbreaks influence fire vulnerability in Pacific Northwest forests?
 - What spatial and temporal patterns exist in budworm outbreaks, and how do they correlate with climate variability? 
@@ -31,17 +27,15 @@ Western spruce budworms are defoliators that consume conifer needles, particular
 **Objective:**
 Our objective is to analyze historical outbreak patterns, integrate climate and fire data, and assess fire vulnerability using geospatial approaches.
 
----
 
 ## **Datasets 📊**
 We will use the following datasets:
-- **🌲 Forest Health Monitoring Program (USDA Forest Service)** – [Link](https://www.fs.usda.gov/foresthealth/) (Budworm outbreak data)
+- **🌲 Forest Health Monitoring Program (USDA Forest Service)** – [Link](https://www.fs.usda.gov/science-technology/forest-health-protection) (Budworm outbreak data)
 - **🛰️ NASA MODIS (Terra/Aqua)** – [Link](https://modis.gsfc.nasa.gov/) (Satellite imagery for vegetation and fire detection)
 - **🌡️ NOAA Climate Data** – [Link](https://www.ncdc.noaa.gov/) (Temperature, precipitation, and drought indices)
 - **🔥 National Interagency Fire Center (NIFC)** – [Link](https://www.nifc.gov/) (Fire occurrence and severity data)
 - **☁️ ECMWF Climate Reanalysis** – [Link](https://www.ecmwf.int/en/forecasts/datasets) (Long-term climate variability)
 
----
 
 ## **Tools & Packages 🛠️** 
 We will conduct all analyses in **Python 🐍**, using the following libraries:
@@ -51,7 +45,6 @@ We will conduct all analyses in **Python 🐍**, using the following libraries:
 - **Remote Sensing**: `Google Earth Engine (gee)`, `satpy`
 - **Fire Behavior Modeling**: `FARSITE`, `FlamMap`
 
----
 
 ## **Methodology 📈**
 1. **Data Collection & Cleaning**: Aggregate outbreak, fire, and climate data, ensuring temporal and spatial alignment.
@@ -60,7 +53,6 @@ We will conduct all analyses in **Python 🐍**, using the following libraries:
 4. **Fire Vulnerability Modeling**: Use fire behavior models and statistical techniques (e.g., Random Forest, regression) to assess fire risk in affected areas.
 5. **Visualization & Interpretation**: Create maps, graphs, and statistical summaries to communicate findings.
 
----
 
 ## **Expected Outcomes 🎯**
  **Goals we hope to achieve:**
@@ -69,16 +61,8 @@ We will conduct all analyses in **Python 🐍**, using the following libraries:
 - Predictive models that could help **inform forest management and wildfire prevention strategies**.
 - Open-source dataset and visualization tools for further research.
 
----
 
 ## **References 📚**
- **Sources & Additional Reading:**
-- USDA Forest Service: [https://www.fs.usda.gov/foresthealth/](https://www.fs.usda.gov/foresthealth/)
-- MODIS Fire and Vegetation Data: [https://modis.gsfc.nasa.gov/](https://modis.gsfc.nasa.gov/)
-- NOAA Climate Data: [https://www.ncdc.noaa.gov/](https://www.ncdc.noaa.gov/)
-- National Interagency Fire Center: [https://www.nifc.gov/](https://www.nifc.gov/)
-- ECMWF Climate Reanalysis: [https://www.ecmwf.int/en/forecasts/datasets](https://www.ecmwf.int/en/forecasts/datasets)
-
  **Relevant Academic Articles:**
 - Fettig, C. J., et al. (2007). "Effects of climate change on insects and pathogens in coniferous forests of the western United States and Canada." Environmental Reviews, 15(1), 1-17. [DOI](https://doi.org/10.1139/a06-016)
 - Howe, M., Hart, S. J., & Trowbridge, A. M. (2024). "Budworms, beetles and wildfire: Disturbance interactions influence the likelihood of insect-caused disturbances at a subcontinental scale." Global Change Biology [DOI](https://doi.org/10.1111/1365-2745.14408)
