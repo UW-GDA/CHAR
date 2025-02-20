@@ -64,9 +64,8 @@ We will conduct all analyses in **Python 🐍**, using the following libraries:
 
 ## **References 📚**
  **Relevant Academic Articles:**
-- Fettig, C. J., et al. (2007). "Effects of climate change on insects and pathogens in coniferous forests of the western United States and Canada." Environmental Reviews, 15(1), 1-17. [DOI](https://doi.org/10.1139/a06-016)
-- Howe, M., Hart, S. J., & Trowbridge, A. M. (2024). "Budworms, beetles and wildfire: Disturbance interactions influence the likelihood of insect-caused disturbances at a subcontinental scale." Global Change Biology [DOI](https://doi.org/10.1111/1365-2745.14408)
-- Hummel, S., & Agee, J. K. (2003). "Western spruce budworm defoliation effects on fuel dynamics and potential fire behavior in mixed-conifer forests." Forest Ecology and Management, 186(1-3), 13-28. [DOI](https://doi.org/10.1016/S0378-1127(03)00228-2)
+- Howe, M., Hart, S. J., & Trowbridge, A. M. (2024). "Budworms, beetles and wildfire: Disturbance interactions influence the likelihood of insect-caused disturbances at a subcontinental scale." Global Change Biology [DOI](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2745.14408)
+-Hummel, S. and Agee, J.K. (2003). "Western spruce budworm defoliation effects on forest structure and potential fire behavior." Northwest Science, 77(2), pp.159-169. [link](https://www.fs.usda.gov/pnw/pubs/journals/pnw_2003_hummel001.pdf)
 - Meigs, G. W., et al. (2016). "Do insect outbreaks reduce the severity of subsequent forest fires?" Environmental Research Letters, 11(4), 045008. [DOI](https://doi.org/10.1088/1748-9326/11/4/045008)
 - Powell, D. C. (1994). Effects of the 1980s Western Spruce Budworm Outbreak on the Malheur National Forest in Northeastern Oregon (R6–FI&D–TP–12–94). United States Department of Agriculture, Forest Service, Pacific Northwest Region, Forest Insects and Diseases Group. [link](https://osu-wams-blogs-uploads.s3.amazonaws.com/blogs.dir/3942/files/2020/10/1994-Powell-Malheur-SpruceBudWorm_stelprdb5358589.pdf)
 - Raffa, K. F., et al. (2008). "Cross-scale drivers of natural disturbances prone to anthropogenic amplification: The dynamics of bark beetle eruptions." BioScience, 58(6), 501-517. [DOI](https://doi.org/10.1641/B580607)
