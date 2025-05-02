@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+    <idinfo>
+        <citation>
+            <citeinfo>
+                <origin/>
+                <origin/>
+                <pubdate>20200112</pubdate>
+                <pubtime>074558</pubtime>
+                <title>Administrative Forest Boundaries (Feature Layer)</title>
+                <geoform>vector digital data</geoform>
+                <onlink>https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestSystemBoundaries_01/MapServer/1</onlink>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>An area encompassing all the National Forest System lands administered by an administrative unit. The area encompasses private lands, other governmental agency lands, and may contain National Forest System lands within the proclaimed boundaries of another administrative unit. All National Forest System lands fall within one and only one Administrative Forest Area. Click this link for full metadata description: Metadata</abstract>
+            <purpose>An area encompassing all the National Forest System lands administered by an administrative unit. All National Forest System lands fall within one and only one Administrative Forest Area.</purpose>
+            <supplinf>The Forest Service has multiple types of boundaries represented by different feature classes (layers): Administrative, Ownership and Proclaimed. 
+        
+1) ADMINISTRATIVE boundaries (e.g. AdministrativeForest and RangerDistrict feature classes) encompass National Forest System lands managed by an administrative unit. These are dynamic layers that should not be considered "legal" boundaries as they are simply intended to identify the specific organizational units that administer areas. As lands are acquired and disposed, the administrative boundaries are adjusted to expand or shrink accordingly. Please note that ranger districts are sub units of National Forests. An administrative forest boundary can contain one or more Proclaimed National Forests, National Grasslands, Purchase Units, Research and Experimental Areas, Land Utilization Projects and various "Other" Areas.  If needed, OWNERSHIP boundaries (e.g. BasicOwnership and SurfaceOwnership feature classes) should be reviewed along with these datasets to determine parcels that are federally managed within the administrative boundaries.  
+       
+2) OWNERSHIP boundaries (e.g. BasicOwnership and SurfaceOwnership feature classes) represent parcels that are tied to legal transactions of ownership. These are parcels of Federal land managed by the USDA Forest Service. Please note that the BasicOwnership layer is simply a dissolved version of the SurfaceOwnership layer.  
+
+3) PROCLAIMED boundaries (e.g. ProclaimedForest and ProclaimedForest_Grassland) encompass areas of National Forest System land that is set aside and reserved from public domain by executive order or proclamation. Please note that the ProclaimedForest layer contains only proclaimed forests while ProclaimedForest_Grassland layer contains both proclaimed forests and proclaimed grasslands. For boundaries that reflect current National Forest System lands managed by an administrative unit, see the ADMINISTRATIVE boundaries (AdministrativeForest and RangerDistrict feature classes).  
+
+For a visual comparison of the different kinds of USFS boundary datasets maintained by the USFS, see the Forest Service Boundary Comparison map at  https://usfs.maps.arcgis.com/apps/CompareAnalysis/index.html?appid=fe7b9f56217949a291356f08cfccb119.
+
+USFS boundaries are often referenced in national datasets maintained by other federal agencies. Please note that variations may be found between USFS data and other boundary datasets due to differing update frequencies. PAD-US (Protected Areas Database of the United States), maintained by the U.S. Geological Survey, is a "best available" inventory of protected areas including data provided by managing agencies and organizations including the Forest Service. For more information see https://gapanalysis.usgs.gov/padus/data/metadata/. SMA (Surface Management Agency), maintained by the Bureau of Land Management, depicts Federal land for the United States and classifies this land by its active Federal surface managing agency. It uses data provided by the Forest Service and other agencies, combined with National Regional Offices collection efforts. For more information see https://landscape.blm.gov/geoportal/catalog/search/resource/details.page?uuid=%7B2A8B8906-7711-4AF7-9510-C6C7FD991177%7D.</supplinf>
+        </descript>
+        <timeperd>
+            <timeinfo>
+                <sngdate>
+                    <caldate>20150826</caldate>
+                </sngdate>
+            </timeinfo>
+            <current>publication date</current>
+        </timeperd>
+        <status>
+            <progress>In work</progress>
+            <update>Weekly</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc>-150.007928</westbc>
+                <eastbc>-64.734329</eastbc>
+                <northbc>61.518992</northbc>
+                <southbc>17.738983</southbc>
+            </bounding>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>Region</themekey>
+                <themekey>Land Status</themekey>
+                <themekey>NFS Lands</themekey>
+                <themekey>Forest Number</themekey>
+                <themekey>Forest Service Land Dataset</themekey>
+                <themekey>Forest Service Lands Program</themekey>
+                <themekey>Administrative Forest</themekey>
+                <themekey>Forest Name</themekey>
+                <themekey>USDA Forest Service</themekey>
+                <themekey>geospatial</themekey>
+            </theme>
+            <theme>
+                <themekt>ISO 19115 Topic Categories</themekt>
+                <themekey>boundaries</themekey>
+            </theme>
+        </keywords>
+        <accconst>None</accconst>
+        <useconst>The USDA Forest Service makes no warranty, expressed or implied, including the warranties of merchantability and fitness for a particular purpose, nor assumes any legal liability or responsibility for the accuracy, reliability, completeness or utility of these geospatial data, or for the improper or incorrect use of these geospatial data. These geospatial data and related maps or graphics are not legal documents and are not intended to be used as such. The data and maps may not be used to determine title, ownership, legal descriptions or boundaries, legal jurisdiction, or restrictions that may be in place on either public or private land. Natural hazards may or may not be depicted on the data and maps, and land users should exercise due caution. The data are dynamic and may change over time. The user is responsible to verify the limitations of the geospatial data and to use the data accordingly. As a work of the United States Government, these data are within the public domain of the United States. Additionally, The U.S. Forest Service waives copyright and related rights in the work worldwide through the CC0 1.0 Universal Public Domain Dedication (which can be found at https://creativecommons.org/publicdomain/zero/1.0/).</useconst>
+        <ptcontac>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>USFS Chief Information Office, Enterprise Data Warehouse</cntorg>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>physical</addrtype>
+                    <city>Washington</city>
+                    <state>DC</state>
+                    <postal>20250</postal>
+                    <country>US</country>
+                </cntaddr>
+                <cntvoice>Please send an e-mail to the address below.</cntvoice>
+                <cntemail>data@fs.fed.us</cntemail>
+            </cntinfo>
+        </ptcontac>
+        <datacred>US Forest Service Enterprise Map Services Program</datacred>
+        <native>Version 6.2 (Build 9200) ; Esri ArcGIS 10.5.1.7333</native>
+        <crossref>
+            <citeinfo>
+                <title>Automated Lands Program (ALP)</title>
+            </citeinfo>
+        </crossref>
+    </idinfo>
+    <dataqual>
+        <attracc>
+            <attraccr>The Regional Land Status personnel are responsible for their local data stewardship and maintenance. The overall collection nationwide consists of 100% attribute accuracy based on currentness and completeness.</attraccr>
+        </attracc>
+        <logic>None.</logic>
+        <complete>This theme is current to date of publication.</complete>
+        <posacc>
+            <horizpa>
+                <horizpar>All features integrate vertically to the source data with the highest level of accuracy (usually survey layers of townships, sections, etc.). Features that share those highly accurate boundaries are vertically integrated. Legal descriptions found in proclamations, legal documents, etc. are used in places where the features do not share boundaries with data which has the highest level of accuracy. Generally the source information used to record spatial locations are from: 1) on-screen digitizing with a georeferenced topographic or image background; or 2) GPS field collected positions.</horizpar>
+            </horizpa>
+        </posacc>
+        <lineage>
+            <srcinfo>
+                <srccite>
+                    <citeinfo>
+                        <pubdate>20200112</pubdate>
+                        <pubtime>074558</pubtime>
+                        <title>Administrative Unit</title>
+                    </citeinfo>
+                </srccite>
+                <srcscale>24000</srcscale>
+                <typesrc>onLine</typesrc>
+                <srctime>
+                    <timeinfo>
+                        <sngdate>
+                            <caldate>20150101</caldate>
+                        </sngdate>
+                    </timeinfo>
+                    <srccurr>publication date</srccurr>
+                </srctime>
+                <srccitea>Administrative Unit</srccitea>
+                <srccontr>Regional data utilizing subtypes.</srccontr>
+            </srcinfo>
+            <procstep>
+                <procdesc>Data was merged from a regional infrastructure, utilizing subtypes, into specific national datasets. This data was published using Feature Manipulation Engine Software. The spatial features were extracted from the transactional database, manipulated to meet the desired output format and published to the target feature class.</procdesc>
+                <procdate>20150101</procdate>
+            </procstep>
+        </lineage>
+    </dataqual>
+    <spdoinfo>
+        <direct>Vector</direct>
+        <ptvctinf>
+            <sdtsterm>
+                <sdtstype>GT-polygon composed of chains</sdtstype>
+                <ptvctcnt>112</ptvctcnt>
+            </sdtsterm>
+        </ptvctinf>
+    </spdoinfo>
+    <eainfo>
+        <detailed>
+            <enttyp>
+                <enttypl>S_USA.AdministrativeForest</enttypl>
+                <enttypd>Feature Class: A collection of geographic features with the same geometry type (such as point, line, or polygon), the same attributes, and the same spatial reference.</enttypd>
+                <enttypds>Esri GIS Data Dictionary</enttypds>
+            </enttyp>
+            <attr>
+                <attrlabl>OBJECTID</attrlabl>
+                <attrdef>Internal feature number.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Internal feature number.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>ADMINFORESTID</attrlabl>
+                <attrdef>Unique identifier generated by Oracle sequence or SYS_GUID() function.  This is the Primary Key.</attrdef>
+                <attrdefs>USFS</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Unique identifier generated by Oracle sequence or SYS_GUID() function.  This is the Primary Key.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>REGION</attrlabl>
+                <attrdef>U.S. Forest Service Region, consisting of Region 01 (Northern Region), Region 02 (Rocky Mountain Region), Region 03 (Southwestern Region), Region 04 (Intermountain Region), Region 05 (Pacific Southwest Region), Region 06 (Pacific Northwest Region), Region 08 (Southern Region), Region 09 (Eastern Region), and Region 10 (Alaska Region). There is no Region 07. Regions are listed on http://www.fs.fed.us/organization/506. Within this dataset, the region represents the Land Status Record System Production Regional schema from which data was derived.</attrdef>
+                <attrdefs>USFS</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>01</edomv>
+                                                						
+                        
+                        <edomvd>Region 01 - Northern</edomvd>
+                                                						
+                        
+                        <edomvds>U.S. Forest Service</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>02</edomv>
+                                                						
+                        
+                        <edomvd>Region 02 - Rocky Mountain</edomvd>
+                                                						
+                        
+                        <edomvds>U.S. Forest Service</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>03</edomv>
+                                                						
+                        
+                        <edomvd>Region 03 - Southwestern</edomvd>
+                                                						
+                        
+                        <edomvds>U.S. Forest Service</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>04</edomv>
+                                                						
+                        
+                        <edomvd>Region 04 - Intermountain</edomvd>
+                                                						
+                        
+                        <edomvds>U.S. Forest Service</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>05</edomv>
+                                                						
+                        
+                        <edomvd>Region 05 - Pacific Southwest</edomvd>
+                                                						
+                        
+                        <edomvds>U.S. Forest Service</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>06</edomv>
+                                                						
+                        
+                        <edomvd>Region 06 - Pacific Northwest</edomvd>
+                                                						
+                        
+                        <edomvds>U.S. Forest Service</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>08</edomv>
+                                                						
+                        
+                        <edomvd>Region 08 - Southern</edomvd>
+                                                						
+                        
+                        <edomvds>U.S. Forest Service</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>09</edomv>
+                                                						
+                        
+                        <edomvd>Region 09 - Eastern</edomvd>
+                                                						
+                        
+                        <edomvds>U.S. Forest Service</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>10</edomv>
+                                                						
+                        
+                        <edomvd>Region 10 - Alaska</edomvd>
+                                                						
+                        
+                        <edomvds>U.S. Forest Service</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>FORESTNUMBER</attrlabl>
+                <attrdef>A number used to identify a National Forest (or other Administrative unit). The forest number is unique only within a Forest Service Region.</attrdef>
+                <attrdefs>USFS</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>A number used to identify a National Forest (or other Administrative unit). The forest number is unique only within a Forest Service Region.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>FORESTORGCODE</attrlabl>
+                <attrdef>The full organizational code of an administrative unit.</attrdef>
+                <attrdefs>USDA Forest Service</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>The full organizational code of an administrative unit.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>FORESTNAME</attrlabl>
+                <attrdef>The official name of the National Forest (or other Administrative Area).</attrdef>
+                <attrdefs>USDA Forest Service</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>The official name of the National Forest (or other Administrative Area).</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>GIS_ACRES</attrlabl>
+                <attrdef>The area of the feature in acres, calculated using a projected surface computation. A NAD 83, USA Contiguous Albers Equal Area Conic projection was used for Regions 1-9, and NAD 83, Alaska Albers for Region 10.</attrdef>
+                <attrdefs>USFS</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>The area of the feature in acres, calculated using a projected surface computation. A NAD 83, USA Contiguous Albers Equal Area Conic projection was used for Regions 1-9, and NAD 83, Alaska Albers for Region 10.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>SHAPE</attrlabl>
+                <attrdef>Feature geometry.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Feature geometry.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>SHAPE.AREA</attrlabl>
+                <attrdef>Area of feature in internal units squared.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Area of feature in internal units squared.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>SHAPE.LEN</attrlabl>
+                <attrdef>Length of feature in internal units.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Length of feature in internal units.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+        </detailed>
+    </eainfo>
+    <distinfo>
+        <distrib>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>USFS Chief Information Office, Enterprise Data Warehouse</cntorg>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>physical</addrtype>
+                    <city>Washington</city>
+                    <state>DC</state>
+                    <postal>20250</postal>
+                </cntaddr>
+                <cntvoice>Please send an e-mail to the address below.</cntvoice>
+                <cntemail>data@fs.fed.us</cntemail>
+            </cntinfo>
+        </distrib>
+        <resdesc>Downloadable data.</resdesc>
+        <distliab>See access and use constraints information.</distliab>
+    </distinfo>
+    <metainfo>
+        <metd>20200106</metd>
+        <metc>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>USFS Chief Information Office, Enterprise Data Warehouse</cntorg>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>physical</addrtype>
+                    <city>Washington</city>
+                    <state>DC</state>
+                    <postal>20250</postal>
+                </cntaddr>
+                <cntvoice>Please send an e-mail to the address below.</cntvoice>
+                <cntemail>data@fs.fed.us</cntemail>
+            </cntinfo>
+        </metc>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+        <metstdv>FGDC-STD-001-1998</metstdv>
+        <mettc>local time</mettc>
+        <metsi>
+            <metscs>None</metscs>
+            <metsc>Unclassified</metsc>
+            <metshd>None</metshd>
+        </metsi>
+    </metainfo>
+</metadata>
