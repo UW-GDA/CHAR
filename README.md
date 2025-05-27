@@ -86,6 +86,8 @@ We focus on a case study in the Malheur National Forest to evaluate data quality
 * Landsat-based **dNBR rasters**
 * Burn severity classification tables
 * Visualizations: maps and NBR/dNBR plots
+  
+![Fire Analysis Results](script_outputs/dNBR.png)
 
 ![Fire Analysis Results](script_outputs/fire_elevation.png)
 
