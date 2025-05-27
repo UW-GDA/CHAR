@@ -87,9 +87,11 @@ We focus on a case study in the Malheur National Forest to evaluate data quality
 * Burn severity classification tables
 * Visualizations: maps and NBR/dNBR plots
 
+![Fire Analysis Results](script_outputs/fire_elevation.png)
+
 ---
 
-## Known Limitations
+## Known Limitations 👀
 
 * Incomplete fire records prior to the 1950s, especially in Malheur NF.
 * Landsat 5 imagery for the 1980s may be sparse or cloud-covered.
@@ -97,7 +99,7 @@ We focus on a case study in the Malheur National Forest to evaluate data quality
 
 ---
 
-## Future Directions
+## Future Directions 📗
 
 * Extend our analysis to other methods of fire severity and compare the 1-, 2-, and 5-year recovery periods
 * Open-source dataset with data cleaned and visualization tools for further research.
