@@ -1,5 +1,5 @@
 """
-NBR Analysis using Landsat 5 NBR 
+Enhanced Fire Severity Analysis using Landsat 5 NBR - COMPLETE VERSION
 
 This module analyzes wildfire burn severity using Normalized Burn Ratio (NBR) 
 calculated from Landsat 5 satellite imagery with options for multi-year analysis.
@@ -7,7 +7,6 @@ calculated from Landsat 5 satellite imagery with options for multi-year analysis
 Functions:
 - clean_fire_year(): Converts fire year values to integers, handling various formats
 - search_landsat5_imagery(): Searches for Landsat 5 images around a target date (polygon-based)
-- search_with_expanding_dates(): Searches with progressively wider date ranges (max 60 days)
 - calculate_nbr(): Computes NBR from Landsat 5 NIR and SWIR2 bands
 - analyze_burn_severity(): Classifies burn severity from dNBR values
 - create_multi_year_plots(): Creates visualization plots for multi-year analysis
@@ -30,6 +29,27 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings('ignore')
 
+print("Libraries imported successfully!")
+
+
+def analyze_burn_severity(dnbr_values):
+    """Classify burn severity from dNBR values from Key & Benson (2006)"""
+    high_severity = np.sum(dnbr_values > 0.66)
+    mod_high_severity = np.sum((dnbr_values >= 0.44) & (dnbr_values <= 0.66))
+    mod_low_severity = np.sum((dnbr_values >= 0.25) & (dnbr_values < 0.44))
+    low_severity = np.sum((dnbr_values >= 0.1) & (dnbr_values < 0.25))
+    unburned = np.sum(dnbr_values < 0.1)
+    total_pixels = len(dnbr_values)
+
+    return {
+        'high_severity': high_severity,
+        'mod_high_severity': mod_high_severity,
+        'mod_low_severity': mod_low_severity,
+        'low_severity': low_severity,
+        'unburned': unburned,
+        'total_pixels': total_pixels
+    }
+
 
 def clean_fire_year(year_value):
     """Convert fire year to integer, handling strings and numbers."""
@@ -44,100 +64,108 @@ def clean_fire_year(year_value):
         return None
 
 
+def format_scale(nbr_range=None, dnbr_range=None):
+    if nbr_range and dnbr_range:
+        return f"Custom Scales: NBR {nbr_range[0]} to {nbr_range[1]}, dNBR {dnbr_range[0]} to {dnbr_range[1]}"
+    if nbr_range:
+        return f"Custom NBR Scale: {nbr_range[0]} to {nbr_range[1]}, dNBR: -1.25 to 1.25 (default)"
+    if dnbr_range:
+        return f"NBR: -1.25 to 1.25 (default), Custom dNBR Scale: {dnbr_range[0]} to {dnbr_range[1]}"
+    return "Scale: -1.25 to 1.25 (symmetric)"
+
+print("Helper functions defined!")
+
+
 def search_landsat5_imagery(geometry, target_date, days_buffer=30):
-    """Search for Landsat 5 imagery around target date using polygon geometry."""
-    start_date = (target_date - timedelta(days=days_buffer)).strftime('%Y-%m-%d')
-    end_date = (target_date + timedelta(days=days_buffer)).strftime('%Y-%m-%d')
-    
+    """Search lansat 5- which operates from 1984-2013 using target date and polygon geometry"""
+    start_date = (target_date - timedelta(days=days_buffer)).strftime('%Y-%m-%d')  #start date using ignition date as target w buffer
+    end_date = (target_date + timedelta(days=days_buffer)).strftime('%Y-%m-%d') #end date using ignition date with buffer
     print(f"Searching Landsat 5 imagery from {start_date} to {end_date}")
-    
+
     catalog = pystac_client.Client.open(
         "https://planetarycomputer.microsoft.com/api/stac/v1/",
         modifier=pc.sign_inplace
     )
     
-    # Use geometry directly instead of bounding box
     geometry_dict = geometry.__geo_interface__
-    
-    # First try with low cloud cover
+
     search = catalog.search(
         collections=["landsat-c2-l2"],
         intersects=geometry_dict,
         datetime=f"{start_date}/{end_date}",
-        query={
-            "platform": {"in": ["landsat-5"]},
-            "eo:cloud_cover": {"lt": 20}  # Stricter cloud filter
-        }
+        query={"platform": {"in": ["landsat-5"]}}
     )
     
     items = list(search.items())
-    
-    if len(items) == 0:
-        print("No images found with <20% clouds, trying <50%...")
-        search = catalog.search(
-            collections=["landsat-c2-l2"],
-            intersects=geometry_dict,
-            datetime=f"{start_date}/{end_date}",
-            query={
-                "platform": {"in": ["landsat-5"]},
-                "eo:cloud_cover": {"lt": 50}
-            }
-        )
-        items = list(search.items())
-    
-    if len(items) == 0:
-        print("No images found with cloud filter, trying without...")
-        search = catalog.search(
-            collections=["landsat-c2-l2"],
-            intersects=geometry_dict,
-            datetime=f"{start_date}/{end_date}",
-            query={"platform": {"in": ["landsat-5"]}}
-        )
-        items = list(search.items())
-    
-    if len(items) > 0:
-        items_with_info = []
-        for item in items:
-            cloud_cover = item.properties.get('eo:cloud_cover', 100)
-            item_date = pd.to_datetime(item.properties['datetime'])
-            
-            if item_date.tz is not None:
-                item_date = item_date.tz_localize(None)
-            if hasattr(target_date, 'tz') and target_date.tz is not None:
-                target_date = target_date.tz_localize(None)
-            
-            date_diff = abs((item_date - target_date).days)
-            items_with_info.append((item, cloud_cover, date_diff, item_date.strftime('%Y-%m-%d')))
-        
-        items_with_info.sort(key=lambda x: (x[2], x[1]))  # Sort by date proximity, then cloud cover
-        sorted_items = [item for item, cloud, date_diff, date_str in items_with_info]
-        
-        print(f"Found {len(sorted_items)} Landsat 5 images:")
-        for i, (item, cloud, date_diff, date_str) in enumerate(items_with_info):
-            print(f"  Image {i+1}: {date_str}, {cloud:.1f}% clouds, {date_diff} days from target")
-        
-        return sorted_items
-    else:
-        print("No Landsat 5 images found")
+    if not items:
+        print("No Landsat 5 images found.")
         return []
 
+    # Extract cloud cover and time difference info for each item
+    items_with_info = []
+    for item in items:
+        cloud_cover = item.properties.get('eo:cloud_cover', 100)
+        item_date = pd.to_datetime(item.properties['datetime']).tz_localize(None)
+        target_naive = target_date.tz_localize(None) if hasattr(target_date, 'tz') and target_date.tz else target_date
+        date_diff = abs((item_date - target_naive).days)
+        items_with_info.append((item, cloud_cover, date_diff, item_date.strftime('%Y-%m-%d')))
 
-def search_with_expanding_dates(geometry, target_date):
-    """Search with progressively expanding date ranges (max 60 days)."""
-    buffers = [30, 60]  # Only search up to 60 days
+    # Sort by cloud cover first, then by date proximity
+    items_with_info.sort(key=lambda x: (x[1], x[2]))
+    sorted_items = [item for item, *_ in items_with_info]
+
+    print(f"Found {len(sorted_items)} Landsat 5 images:")
+    for i, (item, cloud, date_diff, date_str) in enumerate(items_with_info):
+        print(f"  Image {i+1}: {date_str}, {cloud:.1f}% clouds, {date_diff} days from target")
+
+    return sorted_items
+
+
+def calculate_polygon_coverage(nbr_data, fire_polygon_proj):
+    """
+    Calculate what percentage of pixels within the fire polygon have valid NBR data.
     
-    for attempt, buffer in enumerate(buffers):
-        print(f"Attempt {attempt + 1}: Searching with +/-{buffer} day buffer...")
-        items = search_landsat5_imagery(geometry, target_date, days_buffer=buffer)
+    Parameters:
+    - nbr_data: clipped NBR raster data
+    - fire_polygon_proj: fire polygon in same CRS as NBR data
+    
+    Returns:
+    - dict with coverage statistics
+    """
+    try:
+        from rasterio.features import rasterize
         
-        if len(items) > 0:
-            return items
-            
-        if attempt < len(buffers) - 1:
-            print("No results, expanding search window...")
-    
-    print("No Landsat 5 imagery found within 60 days")
-    return []
+        # Get raster properties
+        transform = nbr_data.rio.transform()
+        shape = nbr_data.shape[-2:]  # (height, width)
+        
+        # Create binary mask: 1 = inside fire polygon, 0 = outside
+        polygon_mask = rasterize(
+            [fire_polygon_proj], 
+            out_shape=shape,
+            transform=transform,
+            fill=0,
+            default_value=1
+        ).astype(bool)
+        
+        # Get NBR values only for pixels inside the polygon
+        nbr_values = nbr_data.values.squeeze()
+        pixels_in_polygon = nbr_values[polygon_mask]
+        
+        # Count valid vs NaN within the actual fire polygon
+        valid_in_polygon = (~np.isnan(pixels_in_polygon)).sum()
+        total_in_polygon = len(pixels_in_polygon)
+        coverage_percent = (valid_in_polygon / total_in_polygon) * 100 if total_in_polygon > 0 else 0
+        
+        return {
+            'valid_pixels': valid_in_polygon,
+            'total_polygon_pixels': total_in_polygon,
+            'coverage_percent': coverage_percent
+        }
+        
+    except Exception as e:
+        print(f"Polygon coverage calculation failed: {e}")
+        return None
 
 
 def calculate_nbr(item, fire_polygon):
@@ -197,18 +225,13 @@ def calculate_nbr(item, fire_polygon):
         nbr = (nir_scaled - swir2_scaled) / (nir_scaled + swir2_scaled)
         nbr = nbr.where((nir_scaled + swir2_scaled) != 0)
         
-        # Final clip to exact fire boundary
+        # Check polygon coverage BEFORE clipping
+        polygon_stats = calculate_polygon_coverage(nbr, fire_proj)
+        
+        # Then clip to polygon for final output
         nbr_fire_only = nbr.rio.clip([fire_proj], crs=nbr.rio.crs, drop=True, all_touched=True)
-        
-        # Check results
-        valid_pixels = (~np.isnan(nbr_fire_only.values)).sum()
-        total_pixels = nbr_fire_only.size
-        
-        print(f"Valid pixels: {valid_pixels}/{total_pixels} ({100*valid_pixels/total_pixels:.1f}%)")
-        
-        if valid_pixels == 0:
-            print("No valid data within fire boundary")
-            return None
+        if polygon_stats:
+            print(f"Valid pixels within fire polygon: {polygon_stats['valid_pixels']}/{polygon_stats['total_polygon_pixels']} ({polygon_stats['coverage_percent']:.1f}%)")
         
         print("NBR calculated successfully")
         return nbr_fire_only
@@ -217,133 +240,70 @@ def calculate_nbr(item, fire_polygon):
         print(f"Error calculating NBR: {e}")
         return None
 
-
-def analyze_burn_severity(dnbr_values):
-    """Classify burn severity from dNBR values."""
-    high_severity = np.sum(dnbr_values > 0.66)
-    mod_high_severity = np.sum((dnbr_values >= 0.44) & (dnbr_values <= 0.66))
-    mod_low_severity = np.sum((dnbr_values >= 0.25) & (dnbr_values < 0.44))
-    low_severity = np.sum((dnbr_values >= 0.1) & (dnbr_values < 0.25))
-    unburned = np.sum(dnbr_values < 0.1)
-    total_pixels = len(dnbr_values)
-    
-    return {
-        'high_severity': high_severity,
-        'mod_high_severity': mod_high_severity,
-        'mod_low_severity': mod_low_severity,
-        'low_severity': low_severity,
-        'unburned': unburned,
-        'total_pixels': total_pixels
-    }
+print("NBR calculation function updated with polygon coverage!")
 
 
 def create_multi_year_plots(pre_fire_nbr, post_fire_results, incident, fire_year, 
-                          pre_fire_date, custom_nbr_range=None, custom_dnbr_range=None):
-    """Create visualization plots for multi-year analysis."""
-    
-    # Set scale ranges based on parameters
-    if custom_nbr_range is not None:
-        nbr_vmin, nbr_vmax = custom_nbr_range
+                            pre_fire_date, custom_nbr_range=None, custom_dnbr_range=None):
+    """Create visualization plots for multi-year analysis with custom scale options."""
+    import matplotlib.pyplot as plt
+
+    # Set scale ranges
+    nbr_vmin, nbr_vmax = custom_nbr_range if custom_nbr_range else (-1.25, 1.25)
+    dnbr_vmin, dnbr_vmax = custom_dnbr_range if custom_dnbr_range else (-1.25, 1.25)
+
+    if custom_nbr_range:
         print(f"Using custom NBR range: {nbr_vmin} to {nbr_vmax}")
-    else:
-        nbr_vmin, nbr_vmax = -1.25, 1.25
-    
-    if custom_dnbr_range is not None:
-        dnbr_vmin, dnbr_vmax = custom_dnbr_range
+    if custom_dnbr_range:
         print(f"Using custom dNBR range: {dnbr_vmin} to {dnbr_vmax}")
-    else:
-        dnbr_vmin, dnbr_vmax = -1.25, 1.25
-    
-    # For multi-year analysis, create separate figures for each year
-    if len(post_fire_results) > 1:
-        # Create multiple figures, one for each post-fire year
-        for year_offset, result in post_fire_results.items():
-            fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-            
-            # Reproject data for plotting
-            pre_geo = pre_fire_nbr.rio.reproject('EPSG:4326')
-            post_geo = result['post_fire_nbr'].rio.reproject('EPSG:4326')
-            dnbr_geo = result['dnbr'].rio.reproject('EPSG:4326')
-            
-            # Plot pre-fire NBR
-            pre_geo.plot(ax=axes[0], cmap='RdYlGn', vmin=nbr_vmin, vmax=nbr_vmax)
-            axes[0].set_title(f'Pre-fire NBR\n{pre_fire_date.strftime("%Y-%m-%d")}')
-            axes[0].set_xlabel('Longitude')
-            axes[0].set_ylabel('Latitude')
-            
-            # Plot post-fire NBR
-            post_geo.plot(ax=axes[1], cmap='RdYlGn', vmin=nbr_vmin, vmax=nbr_vmax)
-            axes[1].set_title(f'{year_offset}-Year Post-fire NBR\n{result["post_fire_date"].strftime("%Y-%m-%d")}')
-            axes[1].set_xlabel('Longitude')
-            axes[1].set_ylabel('Latitude')
-            
-            # Plot dNBR
-            dnbr_geo.plot(ax=axes[2], cmap='RdBu_r', vmin=dnbr_vmin, vmax=dnbr_vmax)
-            axes[2].set_title(f'{year_offset}-Year dNBR\n(Burn Severity)')
-            axes[2].set_xlabel('Longitude')
-            axes[2].set_ylabel('Latitude')
-            
-            # Create scale info text for title
-            scale_info = []
-            if custom_nbr_range is not None:
-                scale_info.append(f"NBR: {custom_nbr_range[0]} to {custom_nbr_range[1]}")
-            if custom_dnbr_range is not None:
-                scale_info.append(f"dNBR: {custom_dnbr_range[0]} to {custom_dnbr_range[1]}")
-            if not scale_info:
-                scale_info.append("Scale: -1.25 to 1.25")
-            
-            plt.suptitle(f'{incident} Fire ({fire_year}) - {year_offset}-Year Analysis - {", ".join(scale_info)}')
-            plt.tight_layout()
-            plt.show()
-    
-    else:
-        # Single year analysis - original 3-plot layout
-        year_offset = list(post_fire_results.keys())[0]
-        result = post_fire_results[year_offset]
-        
+
+    # Build scale info string
+    scale_info = []
+    if custom_nbr_range:
+        scale_info.append(f"NBR: {nbr_vmin} to {nbr_vmax}")
+    if custom_dnbr_range:
+        scale_info.append(f"dNBR: {dnbr_vmin} to {dnbr_vmax}")
+    if not scale_info:
+        scale_info.append("Scale: -1.25 to 1.25")
+
+    # Reproject pre-fire NBR once
+    pre_geo = pre_fire_nbr.rio.reproject('EPSG:4326')
+
+    for year_offset, result in post_fire_results.items():
         fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-        
-        # Reproject data for plotting
-        pre_geo = pre_fire_nbr.rio.reproject('EPSG:4326')
+
         post_geo = result['post_fire_nbr'].rio.reproject('EPSG:4326')
         dnbr_geo = result['dnbr'].rio.reproject('EPSG:4326')
-        
+        post_date_str = result["post_fire_date"].strftime("%Y-%m-%d")
+        pre_date_str = pre_fire_date.strftime("%Y-%m-%d")
+
         # Plot pre-fire NBR
         pre_geo.plot(ax=axes[0], cmap='RdYlGn', vmin=nbr_vmin, vmax=nbr_vmax)
-        axes[0].set_title(f'Pre-fire NBR\n{pre_fire_date.strftime("%Y-%m-%d")}')
-        axes[0].set_xlabel('Longitude')
-        axes[0].set_ylabel('Latitude')
-        
+        axes[0].set_title(f'Pre-fire NBR\n{pre_date_str}')
+        axes[0].set_xlabel('Longitude'); axes[0].set_ylabel('Latitude')
+
         # Plot post-fire NBR
+        post_title = 'Post-fire NBR' if year_offset == 1 and len(post_fire_results) == 1 else f'{year_offset}-Year Post-fire NBR'
         post_geo.plot(ax=axes[1], cmap='RdYlGn', vmin=nbr_vmin, vmax=nbr_vmax)
-        if year_offset == 1:
-            axes[1].set_title(f'Post-fire NBR\n{result["post_fire_date"].strftime("%Y-%m-%d")}')
-        else:
-            axes[1].set_title(f'{year_offset}-Year Post-fire NBR\n{result["post_fire_date"].strftime("%Y-%m-%d")}')
-        axes[1].set_xlabel('Longitude')
-        axes[1].set_ylabel('Latitude')
-        
+        axes[1].set_title(f'{post_title}\n{post_date_str}')
+        axes[1].set_xlabel('Longitude'); axes[1].set_ylabel('Latitude')
+
         # Plot dNBR
+        dnbr_title = 'dNBR (Burn Severity)' if len(post_fire_results) == 1 else f'{year_offset}-Year dNBR\n(Burn Severity)'
         dnbr_geo.plot(ax=axes[2], cmap='RdBu_r', vmin=dnbr_vmin, vmax=dnbr_vmax)
-        axes[2].set_title('dNBR (Burn Severity)')
-        axes[2].set_xlabel('Longitude')
-        axes[2].set_ylabel('Latitude')
-        
-        # Create scale info text for title
-        scale_info = []
-        if custom_nbr_range is not None:
-            scale_info.append(f"NBR: {custom_nbr_range[0]} to {custom_nbr_range[1]}")
-        if custom_dnbr_range is not None:
-            scale_info.append(f"dNBR: {custom_dnbr_range[0]} to {custom_dnbr_range[1]}")
-        if not scale_info:
-            scale_info.append("Scale: -1.25 to 1.25")
-        
-        plt.suptitle(f'{incident} Fire ({fire_year}) - Landsat 5 Analysis - {", ".join(scale_info)}')
+        axes[2].set_title(dnbr_title)
+        axes[2].set_xlabel('Longitude'); axes[2].set_ylabel('Latitude')
+
+        # Main title
+        analysis_note = 'Landsat 5 Analysis' if len(post_fire_results) == 1 else f'{year_offset}-Year Analysis'
+        plt.suptitle(f'{incident} Fire ({fire_year}) - {analysis_note} - {", ".join(scale_info)}')
         plt.tight_layout()
         plt.show()
 
+print("Visualization function defined!")
 
-def run_fire_analysis_by_date(fire_name, fire_date, geojson_path="../downloaded_data/mnf_fires_all.geojson", 
+
+def run_fire_analysis_by_date(fire_name, fire_date, geojson_path="../subsetted_data/mnf_fires_all.geojson", 
                               pre_fire_days=30, post_fire_years=[1], 
                               custom_nbr_range=None, custom_dnbr_range=None, return_data=False):
     """
@@ -419,7 +379,7 @@ def run_fire_analysis_by_date(fire_name, fire_date, geojson_path="../downloaded_
     
     # Search for pre-fire imagery
     print(f"\n1. Searching for pre-fire imagery...")
-    pre_fire_items = search_with_expanding_dates(fire_geom, pre_fire_date)
+    pre_fire_items = search_landsat5_imagery(fire_geom, pre_fire_date)
     
     if len(pre_fire_items) == 0:
         print("No pre-fire imagery found")
@@ -446,7 +406,7 @@ def run_fire_analysis_by_date(fire_name, fire_date, geojson_path="../downloaded_
         
         # Search for post-fire imagery
         print(f"Searching for {year_offset}-year post-fire imagery...")
-        post_fire_items = search_with_expanding_dates(fire_geom, post_fire_date)
+        post_fire_items = search_landsat5_imagery(fire_geom, post_fire_date)
         
         if len(post_fire_items) == 0:
             print(f"No {year_offset}-year post-fire imagery found")
@@ -530,7 +490,7 @@ def run_fire_analysis_by_date(fire_name, fire_date, geojson_path="../downloaded_
         print(f"  Low Severity (0.1-0.25):    {severity['low_severity']:5d} pixels ({100*severity['low_severity']/total:5.1f}%)")
         print(f"  Unburned (<0.1):            {severity['unburned']:5d} pixels ({100*severity['unburned']/total:5.1f}%)")
     
-    print(f"\n✓ Analysis complete!")
+    print(f"Analysis complete!")
     
     # Create visualization
     try:
@@ -562,7 +522,7 @@ def run_fire_analysis_by_date(fire_name, fire_date, geojson_path="../downloaded_
     return None
 
 
-def run_fire_analysis(target_year=1989, geojson_path="../downloaded_data/mnf_fires_all.geojson", 
+def run_fire_analysis(target_year=1989, geojson_path="../subsetted_data/mnf_fires_all.geojson", 
                      post_fire_years=[1], 
                      custom_nbr_range=None, custom_dnbr_range=None, return_data=False):
     """
@@ -625,7 +585,7 @@ def run_fire_analysis(target_year=1989, geojson_path="../downloaded_data/mnf_fir
     
     # Search for pre-fire imagery
     print(f"\n1. Searching for pre-fire imagery...")
-    pre_fire_items = search_with_expanding_dates(fire_geom, pre_fire_date)
+    pre_fire_items = search_landsat5_imagery(fire_geom, pre_fire_date)
     
     if len(pre_fire_items) == 0:
         print("No pre-fire imagery found")
@@ -652,7 +612,7 @@ def run_fire_analysis(target_year=1989, geojson_path="../downloaded_data/mnf_fir
         
         # Search for post-fire imagery
         print(f"Searching for {year_offset}-year post-fire imagery...")
-        post_fire_items = search_with_expanding_dates(fire_geom, post_fire_date)
+        post_fire_items = search_landsat5_imagery(fire_geom, post_fire_date)
         
         if len(post_fire_items) == 0:
             print(f"No {year_offset}-year post-fire imagery found")
@@ -735,7 +695,7 @@ def run_fire_analysis(target_year=1989, geojson_path="../downloaded_data/mnf_fir
         print(f"  Low Severity (0.1-0.25):    {severity['low_severity']:5d} pixels ({100*severity['low_severity']/total:5.1f}%)")
         print(f"  Unburned (<0.1):            {severity['unburned']:5d} pixels ({100*severity['unburned']/total:5.1f}%)")
     
-    print(f"\n✓ Analysis complete for {fire_year} fire!")
+    print(f"Analysis complete for {fire_year} fire!")
     
     # Create visualization
     try:
@@ -768,7 +728,7 @@ def run_fire_analysis(target_year=1989, geojson_path="../downloaded_data/mnf_fir
 
 if __name__ == "__main__":
     print("Enhanced Fire Severity Analysis - COMPLETE MODULE")
-    print("="*60)
+    print("=================================================")
     print("Functions:")
     print("run_fire_analysis_by_date() - Analyze using specific fire date")
     print("run_fire_analysis() - Analyze using target year")
