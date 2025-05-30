@@ -76,10 +76,16 @@ def format_scale(nbr_range=None, dnbr_range=None):
 print("Helper functions defined!")
 
 
-def search_landsat5_imagery(geometry, target_date, days_buffer=30):
-    """Search lansat 5- which operates from 1984-2013 using target date and polygon geometry"""
-    start_date = (target_date - timedelta(days=days_buffer)).strftime('%Y-%m-%d')  #start date using ignition date as target w buffer
-    end_date = (target_date + timedelta(days=days_buffer)).strftime('%Y-%m-%d') #end date using ignition date with buffer
+def search_landsat5_imagery(geometry, target_date, days_buffer=30, direction='both'):
+    if direction == 'before':
+        start_date = (target_date - timedelta(days=days_buffer)).strftime('%Y-%m-%d')
+        end_date = target_date.strftime('%Y-%m-%d')
+    elif direction == 'after':
+        start_date = target_date.strftime('%Y-%m-%d')
+        end_date = (target_date + timedelta(days=days_buffer)).strftime('%Y-%m-%d')
+    else:  # 'both'
+        start_date = (target_date - timedelta(days=days_buffer)).strftime('%Y-%m-%d')
+        end_date = (target_date + timedelta(days=days_buffer)).strftime('%Y-%m-%d')
     print(f"Searching Landsat 5 imagery from {start_date} to {end_date}")
 
     catalog = pystac_client.Client.open(
@@ -379,7 +385,7 @@ def run_fire_analysis_by_date(fire_name, fire_date, geojson_path="../subsetted_d
     
     # Search for pre-fire imagery
     print(f"\n1. Searching for pre-fire imagery...")
-    pre_fire_items = search_landsat5_imagery(fire_geom, pre_fire_date)
+    pre_fire_items = search_landsat5_imagery(fire_geom, pre_fire_date, direction='before')
     
     if len(pre_fire_items) == 0:
         print("No pre-fire imagery found")

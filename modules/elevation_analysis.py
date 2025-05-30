@@ -1,36 +1,3 @@
-"""
-Fire Analysis Elevation and Burn Severity Module
-
-Analyzes wildfire burn severity using Landsat 5 NBR and correlates with elevation data.
-Clean, readable code for graduate students without unnecessary complexity.
-
-Functions:
-- clean_year(): Convert messy year data to clean integers
-- find_fire(): Find a fire by name in the dataset
-- get_landsat_images(): Get Landsat 5 images around a target date
-- calculate_nbr(): Calculate NBR from Landsat bands
-- get_burn_severity_stats(): Calculate burn severity statistics
-- get_elevation_points(): Get elevation data using OpenTopoData API
-- analyze_elevation_vs_severity(): Correlate fire severity with elevation
-- plot_results(): Make comprehensive 6-panel plots
-- analyze_fire(): Main analysis function
-- run_fire_elevation_analysis_by_date(): Complete workflow function
-
-Usage:
-    results = run_fire_elevation_analysis_by_date('Monument Rock', '1989-07-28')
-    results = run_fire_elevation_analysis_by_date('Canyon Creek', '1989-08-04')
-
-The function will:
-  1. Find your fire by name
-  2. Get Landsat imagery before and after the fire
-  3. Calculate burn severity (dNBR)
-  4. Download elevation data
-  5. Analyze how elevation affects fire severity
-  6. Make comprehensive plots with all severity categories
-
-"""
-
-
 import geopandas as gpd
 import pandas as pd
 import numpy as np
