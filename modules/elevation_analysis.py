@@ -1,3 +1,36 @@
+"""
+COMPLETE WORKFLOW DOCUMENTATION:
+
+Fire Analysis Elevation and Burn Severity Module
+
+Analyzes wildfire burn severity using Landsat 5 NBR and correlates with elevation data.
+Clean, readable code for graduate students without unnecessary complexity.
+
+Functions:
+- clean_year(): Convert messy year data to clean integers
+- find_fire(): Find a fire by name in the dataset
+- search_landsat5_imagery(): Get Landsat 5 images around a target date
+- calculate_nbr(): Calculate NBR from Landsat bands
+- get_burn_severity_stats(): Calculate burn severity statistics
+- get_elevation_points(): Get elevation data using OpenTopoData API
+- analyze_elevation_vs_severity(): Correlate fire severity with elevation
+- plot_results(): Make comprehensive 6-panel plots
+- analyze_fire(): Main analysis function with customizable post-fire delay
+- run_fire_elevation_analysis_by_date(): Complete workflow function
+
+Usage:
+    results = run_fire_elevation_analysis_by_date('Monument Rock', '1989-07-28')
+    results = run_fire_elevation_analysis_by_date('Canyon Creek', '1989-08-04', post_fire_years=2)
+
+The function will:
+  1. Find your fire by name
+  2. Get Landsat imagery before and after the fire
+  3. Calculate burn severity (dNBR)
+  4. Download elevation data
+  5. Analyze how elevation affects fire severity
+  6. Make comprehensive plots with all severity categories
+"""
+
 import geopandas as gpd
 import pandas as pd
 import numpy as np
@@ -45,45 +78,100 @@ def find_fire(fire_name, fire_file="../subsetted_data/mnf_fires_all.geojson"):
     print(f"Using: {fire['INCIDENT']} ({int(fire['year'])})")
     return fire
 
-def get_landsat_images(fire_polygon, target_date, days=30):
-    """Get Landsat 5 images around a target date"""
-    start = (target_date - timedelta(days=days)).strftime('%Y-%m-%d')
-    end = (target_date + timedelta(days=days)).strftime('%Y-%m-%d')
+def search_landsat5_imagery(geometry, target_date, days_buffer=30):
+    """
+    Search for Landsat 5 imagery around a specific target date
     
-    print(f"Searching Landsat 5 from {start} to {end}")
+    Parameters:
+    -----------
+    geometry : shapely geometry
+        Fire boundary polygon
+    target_date : datetime
+        The target date to search around
+    days_buffer : int
+        Number of days to search before/after the target date (default: 30)
+    """
     
+    start_date = (target_date - timedelta(days=days_buffer)).strftime('%Y-%m-%d')
+    end_date = (target_date + timedelta(days=days_buffer)).strftime('%Y-%m-%d')
+    
+    print(f"Searching Landsat 5 imagery from {start_date} to {end_date}")
+    print(f"  Target date: {target_date.strftime('%Y-%m-%d')}")
+    
+    # Initialize STAC catalog
     catalog = pystac_client.Client.open(
         "https://planetarycomputer.microsoft.com/api/stac/v1/",
         modifier=pc.sign_inplace
     )
     
+    # Search for Landsat 5 data
     search = catalog.search(
         collections=["landsat-c2-l2"],
-        intersects=fire_polygon.__geo_interface__,
-        datetime=f"{start}/{end}",
-        query={"platform": {"in": ["landsat-5"]}}
+        intersects=geometry.__geo_interface__,
+        datetime=f"{start_date}/{end_date}",
+        query={
+            "platform": {"in": ["landsat-5"]},
+            "eo:cloud_cover": {"lt": 50}  # Relaxed cloud cover for 1980s
+        }
     )
     
     items = list(search.items())
     
     if len(items) == 0:
-        print("No images found")
+        print("No images found with cloud filter, trying without cloud filter...")
+        search = catalog.search(
+            collections=["landsat-c2-l2"],
+            intersects=geometry.__geo_interface__,
+            datetime=f"{start_date}/{end_date}",
+            query={"platform": {"in": ["landsat-5"]}}
+        )
+        items = list(search.items())
+    
+    if len(items) == 0:
+        # Try expanding search window
+        expanded_days = days_buffer * 2
+        start_date = (target_date - timedelta(days=expanded_days)).strftime('%Y-%m-%d')
+        end_date = (target_date + timedelta(days=expanded_days)).strftime('%Y-%m-%d')
+        
+        print(f"Expanding search window to {start_date} to {end_date}")
+        
+        search = catalog.search(
+            collections=["landsat-c2-l2"],
+            intersects=geometry.__geo_interface__,
+            datetime=f"{start_date}/{end_date}",
+            query={"platform": {"in": ["landsat-5"]}}
+        )
+        items = list(search.items())
+    
+    if len(items) == 0:
+        print(f"No Landsat 5 images found around {target_date.strftime('%Y-%m-%d')}")
         return []
     
-    # Sort by cloud cover
-    items_sorted = []
+    # Sort by date proximity to target, then cloud cover
+    items_with_info = []
+    target_date_clean = target_date
+    if hasattr(target_date, 'tz') and target_date.tz is not None:
+        target_date_clean = target_date.tz_localize(None)
+    
     for item in items:
-        clouds = item.properties.get('eo:cloud_cover', 100)
-        date = pd.to_datetime(item.properties['datetime']).strftime('%Y-%m-%d')
-        items_sorted.append((item, clouds, date))
+        cloud_cover = item.properties.get('eo:cloud_cover', 100)
+        item_date = pd.to_datetime(item.properties['datetime'])
+        if hasattr(item_date, 'tz') and item_date.tz is not None:
+            item_date = item_date.tz_localize(None)
+        
+        date_diff = abs((item_date - target_date_clean).days)
+        date_str = item_date.strftime('%Y-%m-%d')
+        items_with_info.append((item, cloud_cover, date_diff, date_str))
     
-    items_sorted.sort(key=lambda x: x[1])  # Sort by cloud cover
+    # Sort by date proximity first (closer to target = better), then cloud cover
+    items_with_info.sort(key=lambda x: (x[2], x[1]))
+    sorted_items = [item for item, cloud, date_diff, date_str in items_with_info]
     
-    print(f"Found {len(items_sorted)} images:")
-    for i, (item, clouds, date) in enumerate(items_sorted[:3]):
-        print(f"  {i+1}: {date}, {clouds:.1f}% clouds")
+    print(f"Found {len(sorted_items)} images:")
+    for i, (item, cloud, date_diff, date_str) in enumerate(items_with_info[:3]):
+        print(f"  Image {i+1}: {date_str}, {cloud:.1f}% clouds, {date_diff} days from target")
     
-    return [item for item, _, _ in items_sorted]
+    return sorted_items
 
 def calculate_nbr(landsat_item, fire_polygon):
     """Calculate NBR from Landsat bands"""
@@ -403,11 +491,26 @@ Correlation:
     plt.subplots_adjust(top=0.93)
     plt.show()
 
-def analyze_fire(fire_name, fire_date, fire_file="../subsetted_data/mnf_fires_all.geojson"):
+def analyze_fire(fire_name, fire_date, post_fire_years=1, fire_file="../subsetted_data/mnf_fires_all.geojson"):
     """
-    Main function - analyze a fire by name and date
+    Main function - analyze a fire by name and date with customizable post-fire delay
     
-    Example: analyze_fire("Canyon Creek", "1989-08-04")
+    Parameters:
+    -----------
+    fire_name : str
+        Name of the fire
+    fire_date : str
+        Fire date in 'YYYY-MM-DD' format
+    post_fire_years : float
+        Years after fire to search for post-fire imagery (default: 1)
+    fire_file : str
+        Path to fire boundaries file
+    
+    Examples:
+    ---------
+    analyze_fire("Canyon Creek", "1989-08-04")  # 1 year delay
+    analyze_fire("Canyon Creek", "1989-08-04", post_fire_years=2)  # 2 year delay
+    analyze_fire("Canyon Creek", "1989-08-04", post_fire_years=0.5)  # 6 month delay
     """
     print(f"FIRE ANALYSIS: {fire_name}")
     
@@ -417,35 +520,43 @@ def analyze_fire(fire_name, fire_date, fire_file="../subsetted_data/mnf_fires_al
         return None
     
     # Set up dates
-    fire_date = pd.to_datetime(fire_date)
-    pre_fire_date = fire_date - timedelta(days=30)
-    post_fire_date = fire_date + timedelta(days=365)
+    fire_date_parsed = pd.to_datetime(fire_date)
+    pre_fire_target = fire_date_parsed - timedelta(days=60)  # 2 months before fire
+    post_fire_target = fire_date_parsed + timedelta(days=int(365 * post_fire_years))
     
-    print(f"Dates:")
-    print(f"  Fire: {fire_date.strftime('%Y-%m-%d')}")
-    print(f"  Pre-fire search: {pre_fire_date.strftime('%Y-%m-%d')}")
-    print(f"  Post-fire search: {post_fire_date.strftime('%Y-%m-%d')}")
+    print(f"Fire Information:")
+    print(f"  Name: {fire['INCIDENT']}")
+    print(f"  Fire Date: {fire_date_parsed.strftime('%Y-%m-%d')}")
+    print(f"  Pre-fire target: {pre_fire_target.strftime('%Y-%m-%d')}")
+    print(f"  Post-fire target: {post_fire_target.strftime('%Y-%m-%d')} ({post_fire_years} years after)")
     
-    # Get satellite images
-    print(f"Getting pre-fire imagery...")
-    pre_images = get_landsat_images(fire.geometry, pre_fire_date)
+    # Get PRE-FIRE satellite images
+    print(f"\n=== SEARCHING FOR PRE-FIRE IMAGERY ===")
+    pre_images = search_landsat5_imagery(fire.geometry, pre_fire_target)
     if len(pre_images) == 0:
+        print("No pre-fire imagery found")
         return None
     
-    print(f"Getting post-fire imagery...")
-    post_images = get_landsat_images(fire.geometry, post_fire_date)
+    # Get POST-FIRE satellite images
+    print(f"\n=== SEARCHING FOR POST-FIRE IMAGERY ===")
+    post_images = search_landsat5_imagery(fire.geometry, post_fire_target)
     if len(post_images) == 0:
+        print("No post-fire imagery found")
         return None
     
     # Calculate NBR
-    print(f"Calculating pre-fire NBR...")
+    print(f"\n=== CALCULATING PRE-FIRE NBR ===")
     pre_nbr = calculate_nbr(pre_images[0], fire.geometry)
+    if pre_nbr is None:
+        return None
     
-    print(f"Calculating post-fire NBR...")
+    print(f"\n=== CALCULATING POST-FIRE NBR ===")
     post_nbr = calculate_nbr(post_images[0], fire.geometry)
+    if post_nbr is None:
+        return None
     
     # Calculate dNBR
-    print(f"Calculating dNBR...")
+    print(f"\n=== CALCULATING dNBR ===")
     if pre_nbr.rio.crs != post_nbr.rio.crs:
         post_nbr = post_nbr.rio.reproject_match(pre_nbr)
     
@@ -465,14 +576,14 @@ def analyze_fire(fire_name, fire_date, fire_file="../subsetted_data/mnf_fires_al
     print(f"  Unburned (<0.1):    {severity['unburned'][0]:4d} ({severity['unburned'][1]:4.1f}%)")
     
     # Get elevation data
-    print(f"Getting elevation data...")
+    print(f"\n=== GETTING ELEVATION DATA ===")
     elevation = get_elevation_points(fire.geometry)
     if elevation is None:
         print("Skipping elevation analysis")
         return {'fire': fire, 'dnbr': dnbr, 'severity': severity}
     
     # Elevation analysis
-    print(f"Analyzing elevation vs severity...")
+    print(f"\n=== ANALYZING ELEVATION VS SEVERITY ===")
     elev_results = analyze_elevation_vs_severity(dnbr, elevation, fire.geometry)
     
     # Print detailed results
@@ -484,7 +595,8 @@ def analyze_fire(fire_name, fire_date, fire_file="../subsetted_data/mnf_fires_al
     print(f"Name: {fire['INCIDENT']}")
     print(f"ID: {fire.get('UNQE_FIRE_', 'Unknown')}")
     print(f"Year: {int(fire['year'])}")
-    print(f"Fire Date: {fire_date.strftime('%Y-%m-%d')}")
+    print(f"Fire Date: {fire_date_parsed.strftime('%Y-%m-%d')}")
+    print(f"Post-fire delay: {post_fire_years} years")
     print(f"Satellite: Landsat 5 (30m resolution)")
     
     print(f"Spatial Analysis:")
@@ -534,8 +646,8 @@ def analyze_fire(fire_name, fire_date, fire_file="../subsetted_data/mnf_fires_al
               f"{row['high_severity']:<11.1f} {row['moderate_high']:<11.1f} {row['pixels']:<8.0f}")
     
     # Make plots
-    print(f"Creating plots...")
-    plot_results(elev_results, f"{fire['INCIDENT']} ({fire_date.strftime('%Y')})")
+    print(f"\n=== CREATING PLOTS ===")
+    plot_results(elev_results, f"{fire['INCIDENT']} ({fire_date_parsed.strftime('%Y')})")
     
     print(f"Analysis complete!")
     
@@ -547,27 +659,61 @@ def analyze_fire(fire_name, fire_date, fire_file="../subsetted_data/mnf_fires_al
         'elevation_analysis': elev_results
     }
 
-def run_fire_elevation_analysis_by_date(fire_name, fire_date, fire_file="../subsetted_data/mnf_fires_all.geojson"):
+def run_fire_elevation_analysis_by_date(fire_name, fire_date, post_fire_years=1, fire_file="../subsetted_data/mnf_fires_all.geojson"):
     """
-    Complete workflow function - matches the original function name
+    Complete workflow function with customizable post-fire delay
     
-    Example: run_fire_elevation_analysis_by_date("Monument Rock", "1989-07-28")
+    Parameters:
+    -----------
+    fire_name : str
+        Name of the fire to analyze
+    fire_date : str
+        Fire date in 'YYYY-MM-DD' format  
+    post_fire_years : float
+        Years after fire to search for post-fire imagery (default: 1.0)
+    fire_file : str
+        Path to fire boundaries file
+        
+    Returns:
+    --------
+    dict : Analysis results including fire info, imagery, severity stats, and plots
+    
+    Examples:
+    ---------
+    # Standard 1-year delay
+    results = run_fire_elevation_analysis_by_date('Monument Rock', '1989-07-28')
+    
+    # Custom 2-year delay for more vegetation recovery
+    results = run_fire_elevation_analysis_by_date('Canyon Creek', '1989-08-04', post_fire_years=2.0)
+    
+    # 6-month delay for immediate post-fire analysis
+    results = run_fire_elevation_analysis_by_date('Some Fire', '1990-06-15', post_fire_years=0.5)
     """
-    return analyze_fire(fire_name, fire_date, fire_file)
+    
+    print(f"=== FIRE ELEVATION ANALYSIS WORKFLOW ===")
+    print(f"Fire: {fire_name}")
+    print(f"Fire Date: {fire_date}")
+    print(f"Post-fire delay: {post_fire_years} years")
+    print("="*50)
+    
+    return analyze_fire(fire_name, fire_date, post_fire_years, fire_file)
 
-# Simple usage examples
 if __name__ == "__main__":
-    print("Simple Fire Analysis")
-    print("===================")
+    print("Fire Analysis Elevation and Burn Severity Module - COMPLETE VERSION")
+    print("===================================================================")
+    print("Functions:")
+    print("analyze_fire() - Main analysis function with customizable post-fire delay")
+    print("run_fire_elevation_analysis_by_date() - Complete workflow function")
     print()
-    print("Usage:")
-    print("  results = run_fire_elevation_analysis_by_date('Monument Rock', '1989-07-28')")
-    print("  results = run_fire_elevation_analysis_by_date('Canyon Creek', '1989-08-04')")
+    print("Quick Examples:")
+    print("results = analyze_fire('Canyon Creek', '1989-08-04')  # 1 year delay")
+    print("results = analyze_fire('Canyon Creek', '1989-08-04', post_fire_years=2)  # 2 year delay")
+    print("results = run_fire_elevation_analysis_by_date('Monument Rock', '1989-07-28', post_fire_years=1.5)")
     print()
-    print("The function will:")
-    print("  1. Find your fire by name")
-    print("  2. Get Landsat imagery before and after the fire")
-    print("  3. Calculate burn severity (dNBR)")
-    print("  4. Download elevation data")
-    print("  5. Analyze how elevation affects fire severity")
-    print("  6. Make plots")
+    print("Key Features:")
+    print("- Customizable post-fire delay (0.5, 1, 2, 5 years, etc.)")
+    print("- Simplified search logic - searches around specific target dates")
+    print("- Clean separation of pre-fire and post-fire imagery")
+    print("- Comprehensive elevation vs fire severity analysis")
+    print("- Six-panel visualization plots")
+    print("- Statistical correlation analysis")
