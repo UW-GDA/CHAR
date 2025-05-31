@@ -1,9 +1,9 @@
 # 🔥 CHAR: Comparing Historic Aerial Records
-## Fire Severity Analysis and QA/QC Toolkit
+
 
 ## Project Summary
 
-This repository provides geospatial tools and workflows to evaluate historical wildfire severity, data quality, and disturbance interactions—particularly spruce budworm outbreaks and their relationship with fire vulnerability—in the Pacific Northwest. The project uses Landsat satellite imagery and geospatial datasets to compute differenced Normalized Burn Ratios (dNBR) and clean overlapping and duplicate fire perimeter records for accurate statistical modeling.
+This repository provides a QA/QC toolkit and geospatial workflows/modules to evaluate historical wildfire severity, data quality, and disturbance interactions—particularly spruce budworm outbreaks and their relationship with fire vulnerability—in the Pacific Northwest. The project uses Landsat satellite imagery and geospatial datasets to compute differenced Normalized Burn Ratios (dNBR) and clean overlapping and duplicate fire perimeter records for accurate statistical modeling.
 
 
 ---
