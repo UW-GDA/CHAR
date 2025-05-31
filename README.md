@@ -1,4 +1,5 @@
-# 🔥 Fire Severity Analysis and QA/QC Toolkit
+# 🔥 CHAR: Comparing Historic Aerial Records
+## Fire Severity Analysis and QA/QC Toolkit
 
 ## Project Summary
 
